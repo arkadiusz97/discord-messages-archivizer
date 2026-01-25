@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: discord-messages-archivizer
+  elasticsearch:
+    uris: http://localhost:9200
+    username: elastic
+    password: secret
+xpack:
+  security:
+    enabled: false
+app:
+  #discord-bot-token: ${DISCORD_BOT_TOKEN_MESSAGES_ARCHIVIZER}
+  discord-bot-token: ${DISCORD_BOT_TOKEN}
+  queue-name: discord-messages-archivizer-queue
+  queue-prefetch-count: 2
+  thread-pool-size-for-messages-handler: 2
+  index-name: discord-message
+logging:
+  level:
+    com:
+      github:
+        arkadiusz97:
+          discordmessagesarchivizer: DEBUG
