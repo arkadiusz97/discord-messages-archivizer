@@ -19,3 +19,15 @@ services:
       - 'RABBITMQ_DEFAULT_USER=myuser'
     ports:
       - '5672'
+  discord-messages-archivizer:
+    build: .
+    image: 'discord-messages-archivizer:latest'
+    ports:
+      - 5005:5005
+    environment:
+      DISCORD_BOT_TOKEN_MESSAGES_ARCHIVIZER: ${DISCORD_BOT_TOKEN_MESSAGES_ARCHIVIZER}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-myuser}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-secret}
+    depends_on:
+      - rabbitmq
+      - elasticsearch

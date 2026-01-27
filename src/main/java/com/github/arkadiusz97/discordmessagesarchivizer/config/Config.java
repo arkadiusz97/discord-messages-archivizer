@@ -4,19 +4,24 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.resilience.annotation.EnableResilientMethods;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
+@EnableRetry
+@EnableResilientMethods
 public class Config {
 
     @Bean
-    JacksonJsonMessageConverter jsonConverter() {
+    public JacksonJsonMessageConverter jsonConverter() {
         return new JacksonJsonMessageConverter();
     }
 
@@ -32,8 +37,9 @@ public class Config {
     }
 
     @Bean
-    public Queue myQueue(@Value("${app.queue-name}") String queueName) {
-        return new Queue(queueName);
+    public Queue mainQueue(@Value("${app.queue-name}") String queueName) {
+        return QueueBuilder.durable(queueName)
+                .build();
     }
 
     @Bean

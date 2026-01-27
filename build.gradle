@@ -26,11 +26,14 @@ repositories {
 
 ext {
 	set('discord4jCoreVersion', "3.3.0")
+	set('springRetryVersion', "2.0.12")
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+	implementation "org.springframework.retry:spring-retry:${springRetryVersion}"
 	implementation "com.discord4j:discord4j-core:${discord4jCoreVersion}"
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
