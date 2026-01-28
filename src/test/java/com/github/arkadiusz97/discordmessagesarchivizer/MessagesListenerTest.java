@@ -5,12 +5,6 @@ import com.github.arkadiusz97.discordmessagesarchivizer.service.DiscordEventToMe
 import com.github.arkadiusz97.discordmessagesarchivizer.service.MessagesListener;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Message;
-import discord4j.discordjson.Id;
-import discord4j.discordjson.json.AttachmentData;
-import discord4j.discordjson.json.MessageData;
-import discord4j.discordjson.json.UserData;
-import discord4j.discordjson.possible.Possible;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -52,25 +46,9 @@ public class MessagesListenerTest {
         var guildId = 3L;
         var authorId = 4L;
         var timestamp = "timestamp";
-
-        var message = mock(Message.class);
-        var messageData = mock(MessageData.class);
-        var userData = mock(UserData.class);
-        var attachmentData = mock(AttachmentData.class);
         var attachmentUrl = "attachment-url";
-/*        when(attachmentData.url()).thenReturn(attachmentUrl);
-        when(userData.id()).thenReturn(Id.of(authorId));
-        when(message.getData()).thenReturn(messageData);
-        when(messageData.content()).thenReturn(content);
-        when(messageData.channelId()).thenReturn(Id.of(channelId));
-        when(messageData.id()).thenReturn(Id.of(messageId));
-        when(messageData.guildId()).thenReturn(Possible.of(Id.of(guildId)));
-        when(messageData.author()).thenReturn(userData);
-        when(messageData.timestamp()).thenReturn(timestamp);
-        when(messageData.attachments()).thenReturn(List.of(attachmentData));*/
 
         var event = mock(MessageCreateEvent.class);
-        //when(event.getMessage()).thenReturn(message);
 
         when(converter.convert(event)).thenReturn(new DiscordMessage(messageId, channelId, guildId, authorId, content, timestamp, List.of(attachmentUrl)));
 

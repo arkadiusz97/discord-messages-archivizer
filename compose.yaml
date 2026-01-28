@@ -8,10 +8,15 @@ services:
     ports:
       - '9200:9200'
       - '9300:9300'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health?wait_for_status=green&timeout=30s || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
   kibana:
     image: 'kibana:9.2.4'
     ports:
-      - 5601:5601
+      - '5601:5601'
   rabbitmq:
     image: 'rabbitmq:4.2.3'
     environment:
@@ -23,11 +28,13 @@ services:
     build: .
     image: 'discord-messages-archivizer:latest'
     ports:
-      - 5005:5005
+      - '5005:5005'
     environment:
       DISCORD_BOT_TOKEN_MESSAGES_ARCHIVIZER: ${DISCORD_BOT_TOKEN_MESSAGES_ARCHIVIZER}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-myuser}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-secret}
     depends_on:
-      - rabbitmq
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
