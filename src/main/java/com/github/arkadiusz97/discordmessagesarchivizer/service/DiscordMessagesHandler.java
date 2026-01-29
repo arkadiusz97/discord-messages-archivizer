@@ -24,18 +24,14 @@ public class DiscordMessagesHandler implements MessagesHandler {
     public void handle(DiscordMessage in, Message message, Channel channel) throws IOException {
         log.debug("Received message {}", in);
         messageRepository.save(in);
-        acknowledge(message, channel);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         log.debug("Message {} saved successfully", in);
     }
 
     @Recover
     public void handleFatalErrors(Exception e, DiscordMessage in, Message message, Channel channel) throws IOException {
         log.error("Fatal error occurred after failed recover attempts for message {}", in, e);
-        acknowledge(message, channel);
-    }
-
-    private void acknowledge(Message message, Channel channel) throws IOException {
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
     }
 
 }

@@ -2,9 +2,7 @@ package com.github.arkadiusz97.discordmessagesarchivizer.config;
 
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
@@ -19,6 +17,18 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableRetry
 @EnableResilientMethods
 public class Config {
+
+    private final String deadLetterExchange;
+    private final String deadLetterRoutingKey;
+    private final String deadLetterQueue;
+
+    public Config(@Value("${app.dead-letter-exchange}") String deadLetterExchange,
+                  @Value("${app.dead-letter-routing-key}") String deadLetterRoutingKey,
+                  @Value("${app.dead-letter-queue}") String deadLetterQueue) {
+        this.deadLetterExchange = deadLetterExchange;
+        this.deadLetterRoutingKey = deadLetterRoutingKey;
+        this.deadLetterQueue = deadLetterQueue;
+    }
 
     @Bean
     public JacksonJsonMessageConverter jsonConverter() {
@@ -39,7 +49,27 @@ public class Config {
     @Bean
     public Queue mainQueue(@Value("${app.queue-name}") String queueName) {
         return QueueBuilder.durable(queueName)
+                .deadLetterExchange(deadLetterExchange)
+                .deadLetterRoutingKey(deadLetterRoutingKey)
                 .build();
+    }
+
+    @Bean
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange(deadLetterExchange);
+    }
+
+    @Bean
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(deadLetterQueue).build();
+    }
+
+    @Bean
+    public Binding expiredBinding() {
+        return BindingBuilder
+                .bind(deadLetterQueue())
+                .to(deadLetterExchange())
+                .with(deadLetterRoutingKey);
     }
 
     @Bean
@@ -52,8 +82,7 @@ public class Config {
 
     @Bean
     public ThreadPoolTaskExecutor taskExecutor(
-            @Value("${app.thread-pool-size-for-messages-handler}") int threadPoolSizeForMessagesHandler
-    ) {
+            @Value("${app.thread-pool-size-for-messages-handler}") int threadPoolSizeForMessagesHandler) {
         ThreadPoolTaskExecutor exec = new ThreadPoolTaskExecutor();
         exec.setVirtualThreads(true);
         exec.setThreadNamePrefix("discord-messages-archivizer-handler-");
