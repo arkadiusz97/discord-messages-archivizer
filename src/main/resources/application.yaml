@@ -10,9 +10,9 @@ spring:
 app:
   discord-bot-token: ${DISCORD_BOT_TOKEN_MESSAGES_ARCHIVIZER}
   queue-name: discord-messages-archivizer-queue
-  dead-letter-exchange: discord-messages-archivizer-dle
-  dead-letter-routing-key: discord-messages-archivizer-dle-routing-key
-  dead-letter-queue: discord-messages-archivizer-dle-queue
+  dead-letter-exchange: discord-messages-archivizer-dl-exchange
+  dead-letter-routing-key: discord-messages-archivizer-dl-routing-key
+  dead-letter-queue: discord-messages-archivizer-dl-queue
   queue-prefetch-count: 2
   thread-pool-size-for-messages-handler: 2
   index-name: discord-message
