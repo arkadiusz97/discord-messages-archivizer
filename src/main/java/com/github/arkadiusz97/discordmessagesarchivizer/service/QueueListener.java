@@ -1,6 +1,7 @@
 package com.github.arkadiusz97.discordmessagesarchivizer.service;
 
 import com.github.arkadiusz97.discordmessagesarchivizer.entity.DiscordMessage;
+import com.github.arkadiusz97.discordmessagesarchivizer.service.handler.DiscordMessagesHandler;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class QueueListener {
 
-    private final MessagesHandler messagesHandler;
+    private final DiscordMessagesHandler discordMessagesHandler;
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @RabbitListener(queues = "${app.queue-name}")
@@ -22,7 +23,7 @@ public class QueueListener {
         threadPoolTaskExecutor.execute(
                 () -> {
                     try {
-                        messagesHandler.handle(in, message, channel);
+                        discordMessagesHandler.handle(in, message, channel);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

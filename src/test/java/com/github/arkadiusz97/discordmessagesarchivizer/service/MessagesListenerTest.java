@@ -1,8 +1,7 @@
-package com.github.arkadiusz97.discordmessagesarchivizer;
+package com.github.arkadiusz97.discordmessagesarchivizer.service;
 
 import com.github.arkadiusz97.discordmessagesarchivizer.entity.DiscordMessage;
-import com.github.arkadiusz97.discordmessagesarchivizer.service.DiscordEventToMessageConverter;
-import com.github.arkadiusz97.discordmessagesarchivizer.service.MessagesListener;
+import com.github.arkadiusz97.discordmessagesarchivizer.service.converter.DiscordEventToMessageConverter;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,8 @@ public class MessagesListenerTest {
 
         var event = mock(MessageCreateEvent.class);
 
-        when(converter.convert(event)).thenReturn(new DiscordMessage(messageId, channelId, guildId, authorId, content, timestamp, List.of(attachmentUrl)));
+        when(converter.convert(event)).thenReturn(new DiscordMessage(messageId, channelId, guildId, authorId, content,
+                timestamp, List.of(attachmentUrl)));
 
         when(gatewayDiscordClient.on(MessageCreateEvent.class)).thenReturn(Flux.just(event));
 

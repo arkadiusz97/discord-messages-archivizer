@@ -1,5 +1,6 @@
 package com.github.arkadiusz97.discordmessagesarchivizer.service;
 
+import com.github.arkadiusz97.discordmessagesarchivizer.service.converter.DiscordEventToMessageConverter;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import jakarta.annotation.PostConstruct;

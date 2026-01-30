@@ -65,7 +65,7 @@ public class Config {
     }
 
     @Bean
-    public Binding expiredBinding() {
+    public Binding deadLetterBinding() {
         return BindingBuilder
                 .bind(deadLetterQueue())
                 .to(deadLetterExchange())

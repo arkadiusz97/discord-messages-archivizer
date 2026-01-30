@@ -1,7 +1,6 @@
-package com.github.arkadiusz97.discordmessagesarchivizer;
+package com.github.arkadiusz97.discordmessagesarchivizer.service.converter;
 
 import com.github.arkadiusz97.discordmessagesarchivizer.entity.DiscordMessage;
-import com.github.arkadiusz97.discordmessagesarchivizer.service.DiscordEventToMessageConverterImpl;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.Id;
@@ -9,7 +8,6 @@ import discord4j.discordjson.json.AttachmentData;
 import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.UserData;
 import discord4j.discordjson.possible.Possible;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
