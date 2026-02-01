@@ -1,6 +1,5 @@
 # Discord messages archivizer
 Discord messages archivizer is a Discord's bot for archvizing messages sent on a Discord's server in Elasticsearch index.
-Saved messages can be viewed in Kibana.
 
 ## Getting started
 ### Configure your bot instance on Discord site
@@ -16,11 +15,18 @@ Then run command:
 docker compose up -d
 ```
 
+### Quick look at saved messages
+For a simple test, you can quickly take a look at messages through Elasticsearch API call:
+```
+GET http://localhost:9200/discord-message/_search
+```
+Then you can use attached Kibana for viewing messages or more advanced queries to Elasticsearch API.
+
 ## Example improvements, which can be done
 * Save more fields from a received message from Discord's API.
 * Add integration tests.
 * Consider retry only in case of specific exceptions in DiscordMessagesHandlerImpl.handle.
-* Add properties for configure backoff delay and max attempts for saving messages.
+* Add properties for configuring backoff delay and max attempts for saving messages.
 * Configure SSH options for Elasticsearch and Kibana.
 
 ### License
