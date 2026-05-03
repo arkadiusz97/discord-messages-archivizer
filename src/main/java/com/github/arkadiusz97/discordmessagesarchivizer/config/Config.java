@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.resilience.annotation.EnableResilientMethods;
 import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableRetry
@@ -37,10 +36,14 @@ public class Config {
 
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,
-            JacksonJsonMessageConverter converter, @Value("${app.queue-prefetch-count}") Integer queuePrefetchCount) {
+            JacksonJsonMessageConverter converter, @Value("${app.queue-prefetch-count}") Integer queuePrefetchCount,
+            @Value("${app.max-concurrent-consumers}") Integer maxConcurrentConsumers,
+            @Value("${app.concurrent-consumers}") Integer concurrentConsumers) {
         var factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setPrefetchCount(queuePrefetchCount);
+        factory.setMaxConcurrentConsumers(maxConcurrentConsumers);
+        factory.setConcurrentConsumers(concurrentConsumers);
         factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         factory.setMessageConverter(converter);
         return factory;
@@ -78,16 +81,6 @@ public class Config {
                 .build()
                 .login()
                 .block();
-    }
-
-    @Bean
-    public ThreadPoolTaskExecutor taskExecutor(
-            @Value("${app.thread-pool-size-for-messages-handler}") int threadPoolSizeForMessagesHandler) {
-        ThreadPoolTaskExecutor exec = new ThreadPoolTaskExecutor();
-        exec.setVirtualThreads(true);
-        exec.setThreadNamePrefix("discord-messages-archivizer-handler-");
-        exec.setCorePoolSize(threadPoolSizeForMessagesHandler);
-        return exec;
     }
 
 }

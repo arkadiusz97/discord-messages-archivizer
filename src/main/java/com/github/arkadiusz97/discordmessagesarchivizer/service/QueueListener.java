@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,19 +15,10 @@ import org.springframework.stereotype.Service;
 public class QueueListener {
 
     private final DiscordMessagesHandler discordMessagesHandler;
-    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @RabbitListener(queues = "${app.queue-name}")
-    public void listen(DiscordMessage in, Message message, Channel channel) {
-        threadPoolTaskExecutor.execute(
-                () -> {
-                    try {
-                        discordMessagesHandler.handle(in, message, channel);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
+    public void listen(DiscordMessage in, Message message, Channel channel) throws Exception {
+        discordMessagesHandler.handle(in, message, channel);
     }
 
 }
