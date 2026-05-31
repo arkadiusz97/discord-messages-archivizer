@@ -25,7 +25,7 @@ repositories {
 }
 
 ext {
-	set('discord4jCoreVersion', "3.3.0")
+	set('discord4jCoreVersion', "3.3.2")
 	set('springRetryVersion', "2.0.12")
 }
 

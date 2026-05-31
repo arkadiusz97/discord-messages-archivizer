@@ -2,6 +2,8 @@ package com.github.arkadiusz97.discordmessagesarchivizer.config;
 
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.gateway.intent.Intent;
+import discord4j.gateway.intent.IntentSet;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -79,6 +81,12 @@ public class Config {
     public GatewayDiscordClient gatewayDiscordClient(@Value("${app.discord-bot-token}") String discordBotToken) {
         return DiscordClientBuilder.create(discordBotToken)
                 .build()
+                .gateway()
+                .setEnabledIntents(IntentSet.of(
+                        Intent.GUILDS,
+                        Intent.GUILD_MESSAGES,
+                        Intent.MESSAGE_CONTENT
+                ))
                 .login()
                 .block();
     }
